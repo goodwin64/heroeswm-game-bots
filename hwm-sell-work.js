@@ -23,20 +23,20 @@
       },
       resources: {
         'Золото':               {cost:     1,   minCount:  0,  factoryTitle: null                 },
-        'Древесина': 	          {cost:   180,   minCount:  5,  factoryTitle: 'Лесопилка'          },
-        'Руда': 	              {cost:   180,   minCount:  5,  factoryTitle: 'Рудник'             },
-        'Ртуть': 	              {cost:   360,   minCount:  3,  factoryTitle: 'Лаборатория'        },
-        'Сера': 	              {cost:   360,   minCount:  3,  factoryTitle: 'Залежи серы'        },
-        'Кристаллы': 	          {cost:   360,   minCount:  3,  factoryTitle: 'Пещера кристаллов'  },
-        'Самоцветы': 	          {cost:   360,   minCount:  3,  factoryTitle: 'Шахта самоцветов'   },
-        'Кожа': 	              {cost:   180,   minCount:  3,  factoryTitle: 'Ферма'              },
+        'Древесина': 	        {cost:   180,   minCount:  5,  factoryTitle: 'Лесопилка'          },
+        'Руда': 	            {cost:   180,   minCount:  5,  factoryTitle: 'Рудник'             },
+        'Ртуть': 	            {cost:   360,   minCount:  3,  factoryTitle: 'Лаборатория'        },
+        'Сера': 	            {cost:   360,   minCount:  3,  factoryTitle: 'Залежи серы'        },
+        'Кристаллы': 	        {cost:   360,   minCount:  3,  factoryTitle: 'Пещера кристаллов'  },
+        'Самоцветы': 	        {cost:   360,   minCount:  3,  factoryTitle: 'Шахта самоцветов'   },
+        'Кожа': 	            {cost:   180,   minCount:  3,  factoryTitle: 'Ферма'              },
         'Мифриловая руда':      {cost:   460,   minCount:  3,  factoryTitle: 'Мифриловая шахта'   },
-        'Обсидиан': 	          {cost:  2000,   minCount:  1,  factoryTitle: 'Обсидиановая шахта' },
+        'Обсидиан': 	        {cost:  2000,   minCount:  1,  factoryTitle: 'Обсидиановая шахта' },
         'Волшебный порошок':    {cost:  2074,   minCount:  1,  factoryTitle: 'Фабрика магии'      },
         'Мифрил': 	            {cost:  3325,   minCount:  1,  factoryTitle: 'Литейный цех'       },
         'Никель': 	            {cost:  1698,   minCount:  1,  factoryTitle: 'Никелевый цех'      },
         'Орихалк': 	            {cost: 11000,   minCount:  1,  factoryTitle: 'Плавильный цех'     },
-        'Сталь': 	              {cost:   759,   minCount:  2,  factoryTitle: 'Сталелитейный цех'  },
+        'Сталь': 	            {cost:   759,   minCount:  2,  factoryTitle: 'Сталелитейный цех'  },
       },
       logDelimiter: '------------------------------',
       companies: {
@@ -140,7 +140,7 @@
       getFirstOpenFactoryUrl: function(doc) {
         var allLinks = [].filter.call(
           doc.getElementsByTagName('a'),
-          (e) => e.innerText === '»»»'
+          (e) => e.innerText === '»»»' && e.color !== 'red'
         );
         if (allLinks.length > 0) {
           var firstLink = allLinks[0];
