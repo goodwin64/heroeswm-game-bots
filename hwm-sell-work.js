@@ -554,6 +554,7 @@
                     (td) => td.innerText.trim().includes('Можете купить:')
                 ).querySelector('b');
                 if (!howMuchCanIBuyElem) { // Не могу купить
+                    amountAllowed = 0;
                     return;
                 } else {
                     amountAllowed = +howMuchCanIBuyElem.innerText.replace(/,/g, '');
@@ -591,7 +592,7 @@
                 var factoriesThatINeed = utils.getFactoriesTitles(toBuy);
                 var factoriesParsed = {};
 
-                function localCallback(linkElems) {
+                function updateFactories(linkElems) {
                     linkElems.forEach((a) => {
                         var resKey = Object.keys(factoriesThatINeed).filter((key) => {
                             return factoriesThatINeed[key] === a.innerText;
@@ -607,11 +608,11 @@
                 }
 
                 return utils.getFactoriesOnMap('mn').then((linkElems) => { // ДОБЫЧА
-                    localCallback(linkElems);
+                    updateFactories(linkElems);
 
                     return utils.getFactoriesOnMap('fc'); // ОБРАБОТКА
                 }).then((linkElems) => {
-                    localCallback(linkElems);
+                    updateFactories(linkElems);
 
                 }).then(() => {
                     return Promise.all(Object.keys(factoriesParsed).map((res) => {
