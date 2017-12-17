@@ -123,7 +123,7 @@
             getFirstOpenFactoryUrl: function (doc) {
                 var allLinks = [].filter.call(
                     doc.getElementsByTagName('a'),
-                    (e) => e.innerText === '»»»' && e.color !== 'red'
+                    (e) => e.innerHTML === '»»»'
                 );
                 if (allLinks.length > 0) {
                     var firstLink = allLinks[0];
