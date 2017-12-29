@@ -8,7 +8,7 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // ==/UserScript==
-(function() {
+(function () {
     'use strict';
 
     var charLevel = 9;
@@ -21,23 +21,23 @@
         var yourBetsElem = (() => {
             var arr = [].filter.call(
                 doc.getElementsByTagName('b'),
-                (e) => e.innerText === 'Ваши ставки'
-    );
-        if (arr.length > 0) return arr[0];
-    })();
+                (e) => e.innerText === 'Ваши ставки',
+            );
+            if (arr.length > 0) return arr[0];
+        })();
         if (!yourBetsElem) return result;
 
         var betsElemArr = (() => {
             var trs = yourBetsElem.parentElement.nextElementSibling.querySelector('tbody').children;
-        return [].slice.call(trs, 1, trs.length - 1); // кроме первого и последнего
-    })();
+            return [].slice.call(trs, 1, trs.length - 1); // кроме первого и последнего
+        })();
 
         betsElemArr.forEach((tr) => {
             var betTitle = tr.children[1].innerText;
-        var betValue = +tr.children[0].innerText.replace(/,/g, '');
+            var betValue = +tr.children[0].innerText.replace(/,/g, '');
 
-        result[betTitle] = betValue;
-    });
+            result[betTitle] = betValue;
+        });
 
         return result;
     }
@@ -51,7 +51,7 @@
             keys1.length === keys2.length &&
             keys1.every((key) => {
                 return key in obj2 && obj1[key] === obj2[key];
-    });
+            });
     }
 
     function makeBet(betTitle, betValue) {
@@ -82,12 +82,12 @@
                 };
             } else if (method.toLowerCase() === 'get') {
                 var reader = new FileReader();
-                reader.addEventListener("loadend", function () {
+                reader.addEventListener('loadend', function () {
                     resolve(reader.result);
                 });
-                xhr.responseType = "blob";
+                xhr.responseType = 'blob';
                 xhr.onload = function () {
-                    reader.readAsText(xhr.response, "windows-1251");
+                    reader.readAsText(xhr.response, 'windows-1251');
                 };
             }
             xhr.send(params);
@@ -95,22 +95,22 @@
     }
 
     function getDocFromString(response) {
-        return new DOMParser().parseFromString(response, "text/html");
+        return new DOMParser().parseFromString(response, 'text/html');
     }
 
     function getPrevNumber() {
         var link = [].find.call(
             document.getElementsByTagName('a'),
-            (e) => e.innerText === 'Прошлая игра'
-    );
+            (e) => e.innerText === 'Прошлая игра',
+        );
         return $ajax('GET', link.href).then((lastRoulPage) => {
             var doc = getDocFromString(lastRoulPage);
-        var u = [].find.call(
-            doc.getElementsByTagName('u'),
-            (e) => e.firstChild.textContent.trim() === 'Выпало число'
-    );
-        return u.querySelector('b').innerText;
-    });
+            var u = [].find.call(
+                doc.getElementsByTagName('u'),
+                (e) => e.firstChild.textContent.trim() === 'Выпало число',
+            );
+            return u.querySelector('b').innerText;
+        });
     }
 
     function updateBets() {
@@ -119,14 +119,14 @@
             GM_setValue('hwm_roul_currspin', ++currSpin);
             Object.keys(fromGM).forEach((key) => {
                 fromGM[key] = calculateBet(firstBet, currSpin, factor);
-        });
+            });
             GM_setValue('hwm_roul_bets', JSON.stringify(fromGM));
         } else {
             Object.keys(fromGM).forEach((key) => {
                 if (!(key in myBets)) {
-                makeBet(key, fromGM[key]);
-            }
-        });
+                    makeBet(key, fromGM[key]);
+                }
+            });
         }
     }
 
@@ -225,7 +225,7 @@ position: relative;
         var itsParent = tableWithBets.parentElement;
         itsParent.insertAdjacentHTML('afterBegin', getOptionsElem());
 
-        document.getElementById('roul-catch-status').addEventListener('click', function(event) {
+        document.getElementById('roul-catch-status').addEventListener('click', function (event) {
             event.preventDefault();
             var status = GM_getValue('hwm_roul_botstatus');
             status = (status === 'on' ? 'off' : 'on');
@@ -233,7 +233,7 @@ position: relative;
             this.setAttribute('roul-catch', status);
         });
 
-        document.getElementById('roul-catch-save-options').addEventListener('click', function(event) {
+        document.getElementById('roul-catch-save-options').addEventListener('click', function (event) {
             event.preventDefault();
             updateOptions();
         });
@@ -256,30 +256,30 @@ position: relative;
             var fromGM = {};
             numbersToCatch.forEach((number) => {
                 fromGM[`Straight up ${number}`] = calculateBet(firstBet, currSpin, factor);
-        });
+            });
 
             getPrevNumber().then((lastNumber) => {
                 var caughtNumber = '';
-            if (numbersToCatch.some((num) => num === lastNumber)) {
-                log(`Поздравляю! Число ${lastNumber} выпало!`);
+                if (numbersToCatch.some((num) => num === lastNumber)) {
+                    log(`Поздравляю! Число ${lastNumber} выпало!`);
 
-                GM_setValue('hwm_roul_botstatus', 'off');
-            } else {
-                log(`Выпало число ${lastNumber}. Повышаю ставки`);
-                updateBets();
+                    GM_setValue('hwm_roul_botstatus', 'off');
+                } else {
+                    log(`Выпало число ${lastNumber}. Повышаю ставки`);
+                    updateBets();
 
-                var delay = 9 * 60 * 1000;
-                var nextTime = new Date(+new Date() + delay);
-                log(`В следующий раз проверю рулетку в ${nextTime.toLocaleTimeString()}.`);
-                setTimeout(() => {
-                    location.reload();
-            }, delay);
-            }
-        });
+                    var delay = 9 * 60 * 1000;
+                    var nextTime = new Date(+new Date() + delay);
+                    log(`В следующий раз проверю рулетку в ${nextTime.toLocaleTimeString()}.`);
+                    setTimeout(() => {
+                        location.reload();
+                    }, delay);
+                }
+            });
         } else {
             setTimeout(() => {
                 location.reload();
-        }, 60 * 1000);
+            }, 60 * 1000);
         }
     }
 
