@@ -98,7 +98,7 @@
                   .join('&')
                   ;
             },
-            getWorkParams: function (doc) {
+            getWorkParams: function (doc, docStr) {
                 var captchaInput = doc.querySelector('form[name="working"] input[type="text"]');
                 utils.checkExistence(captchaInput, doc, 'Captcha input not found');
 
@@ -106,6 +106,7 @@
                     ...acc,
                     [curr]: doc.querySelector(`input[name="${curr}"]`)?.value,
                 }), {});
+                params.num = utils.getNumParamValue(docStr);
 
                 return params;
             },
@@ -200,7 +201,7 @@
                 }).then((factoryPage) => {
                     if (factoryPage && factoryPage.search(/Устройство на работу/i) !== -1) {
                         var factoryDocument = utils.getDocFromString(factoryPage);
-                        globalVars.workParams = utils.getWorkParams(factoryDocument);
+                        globalVars.workParams = utils.getWorkParams(factoryDocument, factoryPage);
                     } else {
                         throw new Error('На производстве нет формы "Устройство на работу"');
                     }
@@ -327,7 +328,16 @@
                     cost = cost || 0;
                     return accum + params[curr] * cost;
                 }, 0)}`);
-            }
+            },
+            getNumParamValue: (docStr) => {
+                const s1 = `document.getElementById("num").value = `;
+                const s2 = `; var l = document.getElementById("code").value.length`;
+                const numValueExpression = docStr.slice(
+                  docStr.indexOf(s1) + s1.length,
+                  docStr.indexOf(s2),
+                );
+                return eval(numValueExpression);
+            },
         };
 
         var game = {
@@ -438,7 +448,6 @@
                 }).then((firstProdPage) => { // обработка страницы первого открытого предприятия
 
                     var doc = utils.getDocFromString(firstProdPage);
-                    globalVars.workParams = utils.getWorkParams(doc);
                     var captchaUrl = utils.getCaptchaUrl(doc); // получить относительную ссылку капчи
                     if (!captchaUrl) {
                         throw new Error('Captcha not found on page');
