@@ -12,8 +12,8 @@
     var myBot = (() => {
         var globalVars = {
             charParams: { id: null },
-            serverUrl: 'http://localhost:2999',
-            hwmUrl: 'http://www.heroeswm.ru',
+            serverUrl: 'http://localhost:3000',
+            hwmUrl: 'https://www.heroeswm.ru',
             sellResUrl: 'sell_res.php',
             firstOpenProdUrl: '',
             workParams: {},
@@ -131,7 +131,7 @@
                 return firstLink && firstLink.getAttribute('href');
             },
             getFactoriesOnMap: function (factoriesType = 'sh') {
-                return utils.$ajax('GET', `http://www.heroeswm.ru/map.php?st=${factoriesType}`
+                return utils.$ajax('GET', `https://www.heroeswm.ru/map.php?st=${factoriesType}`
                 ).then((mapPage) => {
                     var doc = utils.getDocFromString(mapPage);
                     return doc.querySelectorAll('a[href*=object-info]:not([id])');
@@ -215,7 +215,7 @@
                 });
 
                 function getFactoriesOnMap(type = 'sh') {
-                    return utils.$ajax('GET', `http://www.heroeswm.ru/map.php?st=${type}`
+                    return utils.$ajax('GET', `https://www.heroeswm.ru/map.php?st=${type}`
                     ).then((mapPageFactories) => {
                         return onMapGetCallback(mapPageFactories);
                     });
@@ -237,7 +237,7 @@
                 }
             },
             getFactoryPage: function (factoryId) {
-                return utils.$ajax('GET', `http://www.heroeswm.ru/object-info.php?id=${factoryId}`);
+                return utils.$ajax('GET', `https://www.heroeswm.ru/object-info.php?id=${factoryId}`);
             },
             getCompanyParams: function (companyPage) {
                 var doc = utils.getDocFromString(companyPage);
@@ -286,7 +286,7 @@
                 }
             },
             getCharParams: function (charId = globalVars.charParams.id) {
-                return utils.$ajax('GET', `http://www.heroeswm.ru/pl_info.php?id=${charId}`
+                return utils.$ajax('GET', `https://www.heroeswm.ru/pl_info.php?id=${charId}`
                 ).then((charPage) => {
                     var doc = utils.getDocFromString(charPage);
                     var wbs = doc.querySelectorAll('td.wb');
@@ -368,7 +368,7 @@
                 });
             },
             checkCompanyForSell: function (isOpen, companyId) {
-                return utils.$ajax('GET', `http://www.heroeswm.ru/object-info.php?id=${companyId}`
+                return utils.$ajax('GET', `https://www.heroeswm.ru/object-info.php?id=${companyId}`
                 ).then((companyPage) => {
                     var isCompanyInsolvent = (() => {
                         var companyParams = utils.getCompanyParams(companyPage);
@@ -418,7 +418,7 @@
             },
             checkWorkStatus: function () {
                 utils.log(`Проверка, может, я уже устроен?`);
-                return utils.$ajax('GET', 'http://www.heroeswm.ru/home.php'
+                return utils.$ajax('GET', 'https://www.heroeswm.ru/home.php'
                 ).then((charPage) => charPage.includes('Вы нигде не работаете.'));
             },
             getWork: function () {
@@ -426,7 +426,7 @@
                 return game.checkWorkStatus().then((workStatus) => {
                     if (workStatus) {
                         utils.log(`Устраиваюсь на работу`);
-                        return utils.$ajax('GET', 'http://www.heroeswm.ru/map.php?st=mn');
+                        return utils.$ajax('GET', 'https://www.heroeswm.ru/map.php?st=mn');
                     } else {
                         throw new Error('Уже устроен');
                     }
@@ -530,7 +530,7 @@
                 }, 5 * 1000);
             },
             getCharId: function () {
-                return utils.$ajax('GET', `http://www.heroeswm.ru/home.php`
+                return utils.$ajax('GET', `https://www.heroeswm.ru/home.php`
                 ).then((homePage) => {
                     var doc = utils.getDocFromString(homePage);
                     var charLink = doc.querySelector('center > a.pi[href*="pl_info.php?id="]');
@@ -579,7 +579,7 @@
                 }, `rand1=NaN`);
 
                 if (amountAllowed >= amount) {
-                    return utils.$ajax('POST', 'http://www.heroeswm.ru/buy_res.php', POST_query);
+                    return utils.$ajax('POST', 'https://www.heroeswm.ru/buy_res.php', POST_query);
                 }
             },
             buyResOnMap: function (factoryLink, amount) {
