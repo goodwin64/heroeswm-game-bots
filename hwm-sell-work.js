@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  try to take over the world!
 // @author       You
-// @match        http://www.heroeswm.ru/pl_info.php?id=*/
+// @match        https://www.heroeswm.ru/pl_info.php?id=*/
 // @grant        none
 // ==/UserScript==
 
