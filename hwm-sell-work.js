@@ -86,36 +86,28 @@
             },
             sendCaptcha: function () {
                 var workParams = globalVars.workParams;
-                var url = `${globalVars.hwmUrl}/object_do.php?`;
-                url += `id=${workParams.id}`;
-                url += `&code=${workParams.code}`;
-                url += `&code_id=${workParams.code_id}`;
-                url += `&pl_id=${workParams.pl_id}`;
-                url += `&rand1=${workParams.rand1}`;
-                url += `&rand2=${workParams.rand2}`;
-
-                utils.log(`Отправляю капчу по url: ${url.split('&')}`);
-                return this.$ajax('GET', url);
+                var params = this.stringifyParams(workParams);
+                var url = `${globalVars.hwmUrl}/object_do.php`;
+                utils.log(`Отправляю капчу по url: ${url}`, params);
+                return this.$ajax('POST', url, params);
+            },
+            stringifyParams(params) {
+                return Object
+                  .keys(params)
+                  .map((key) => `${key}=${params[key]}`)
+                  .join('&')
+                  ;
             },
             getWorkParams: function (doc) {
-                var flashParamsElem = doc.querySelector('object param[value*="workcode.swf"]');
-                if (!flashParamsElem) {
-                    throw new Error('Flash obj with workcode.swf not found');
-                }
-                utils.checkExistence(flashParamsElem, doc, 'Flash obj with workcode.swf not found');
+                var captchaInput = doc.querySelector('form[name="working"] input[type="text"]');
+                utils.checkExistence(captchaInput, doc, 'Captcha input not found');
 
-                var paramsString = flashParamsElem.nextElementSibling.value;
-                paramsString = paramsString.replace(/params=/, '');
+                var params = ['id', 'id2', 'idr', 'num', 'id3'].reduce((acc, curr) => ({
+                    ...acc,
+                    [curr]: doc.querySelector(`input[name="${curr}"]`)?.value,
+                }), {});
 
-                var paramsArr = paramsString.split('|').filter((slice) => slice);
-
-                return {
-                    pl_id: paramsArr[0],
-                    id: paramsArr[1],
-                    code_id: paramsArr[2],
-                    rand1: Math.random().toPrecision(Math.random() < 0.5 ? 10 : 11),
-                    rand2: Math.random().toPrecision(15)
-                };
+                return params;
             },
             getRandInt: function (min, max) {
                 return Math.floor(Math.random() * (max - min + 1)) + min;
