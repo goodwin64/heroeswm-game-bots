@@ -102,10 +102,13 @@
                 var captchaInput = doc.querySelector('form[name="working"] input[type="text"]');
                 utils.checkExistence(captchaInput, doc, 'Captcha input not found');
 
-                var params = ['id', 'id2', 'idr', 'num', 'id3'].reduce((acc, curr) => ({
-                    ...acc,
-                    [curr]: doc.querySelector(`input[name="${curr}"]`)?.value,
-                }), {});
+                var params = ['id', 'id2', 'idr', 'num', 'id3'].reduce((acc, curr) => {
+                    const input = doc.querySelector(`input[name="${curr}"]`);
+                    return {
+                        ...acc,
+                        [curr]: input && input.value,
+                    }
+                }, {});
                 params.num = utils.getNumParamValue(docStr);
 
                 return params;
